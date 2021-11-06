@@ -3,44 +3,40 @@ using System.Globalization;
 
 namespace randomWordGenerator
 {
-  class Program
-  {
-    static void Main(string[] args)
+    class Program
     {
-      var ti = new CultureInfo("en-US", false).TextInfo;
-
-      var dict = new System.Collections.Generic.Dictionary<int, Tuple<string, int>>() { };
-      string[] lines = System.IO.File.ReadAllLines(AppContext.BaseDirectory + "dictionary.txt");
-      for (int i = 0; i < lines.Length; i++) dict.Add(i, new Tuple<string, int>(lines[i], lines[i].Length));
-
-      bool proceed = true;
-      while (proceed)
-      {
-        try
+        static void Main(string[] args)
         {
-          Console.WriteLine("Enter number of words 1-32.");
-          int wordCount = int.TryParse(Console.ReadLine(), out int o) ? ((o > 32) ? 32 : (o < 0) ? 1 : o) : 6;
+            var ti = new CultureInfo("en-US", false).TextInfo;
 
-          var r = new Random();
-          string randWords = "";
-          int max = dict.Keys.Count;
+            string[] lines = System.IO.File.ReadAllLines(AppContext.BaseDirectory + "dictionary.txt");
+            
+            Console.WriteLine("Enter number of words 1-32.");
+            bool proceed = int.TryParse(Console.ReadLine(), out int o);
+            while (proceed)
+            {
+                try
+                {
+                    int wordCount = (o > 32) ? 32 : (o < 1) ? 1 : o;
+                    var r = new Random();
+                    string randWords = "";
+                    int max = lines.Length;
 
-          for (int i = 0; i < wordCount; i++) randWords += ti.ToTitleCase(dict[r.Next(max)].Item1.ToString());
+                    for (int i = 0; i < wordCount; i++) randWords += ti.ToTitleCase(lines[r.Next(max)]);
 
-          Console.WriteLine($"{randWords.Length} - {randWords}");
+                    Console.WriteLine($"{randWords.Length} - {randWords}");
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    throw;
+                }
+                finally
+                {
+                    Console.WriteLine("Enter another number to continue:");
+                    proceed = int.TryParse(Console.ReadLine(), out o);
+                }
+            }
         }
-        catch (System.Exception ex)
-        {
-          Console.WriteLine(ex.ToString());
-          throw;
-        }
-        finally
-        {
-          Console.WriteLine("Continue? y/n");
-          var c = Console.ReadLine();
-          if (c.ToLower() != "y") proceed = false;
-        }
-      }
     }
-  }
 }
