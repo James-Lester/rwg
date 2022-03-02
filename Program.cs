@@ -10,6 +10,8 @@ namespace randomWordGenerator
             var ti = new CultureInfo("en-US", false).TextInfo;
 
             string[] lines = System.IO.File.ReadAllLines(AppContext.BaseDirectory + "dictionary.txt");
+            int max = lines.Length;            
+            var r = new Random();            
             
             Console.WriteLine("Enter number of words 1-32.");
             bool proceed = int.TryParse(Console.ReadLine(), out int o);
@@ -18,9 +20,7 @@ namespace randomWordGenerator
                 try
                 {
                     int wordCount = (o > 32) ? 32 : (o < 1) ? 1 : o;
-                    var r = new Random();
                     string randWords = "";
-                    int max = lines.Length;
 
                     for (int i = 0; i < wordCount; i++) randWords += ti.ToTitleCase(lines[r.Next(max)]);
 
